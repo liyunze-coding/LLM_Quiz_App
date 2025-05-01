@@ -63,6 +63,12 @@ class HomeActivity : AppCompatActivity() {
         questionDiv.addView(titleText)
         questionDiv.addView(subtitleText)
 
+        questionDiv.setOnClickListener {
+            val questionIntent = Intent(this, QuestionActivity::class.java)
+            questionIntent.putExtra("topic", interest)
+            startActivity(questionIntent)
+        }
+
         return questionDiv
     }
 
