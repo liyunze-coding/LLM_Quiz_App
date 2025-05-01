@@ -22,7 +22,7 @@ class HomeActivity : AppCompatActivity() {
         // Step 2: Create a new LinearLayout (the "question_div" container)
         val questionDiv = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(20, 20, 20, 20)
+            setPadding(50, 50, 50, 50)
             setBackgroundResource(R.drawable.question_div)
             isClickable = true
             isFocusable = true
@@ -86,6 +86,9 @@ class HomeActivity : AppCompatActivity() {
             startActivity(homeIntent)
         }
 
+        val usernameText = findViewById<TextView>(R.id.usernameText)
+        usernameText.text = db.getUsername(userId).title()
+
         val btnInterests = findViewById<Button>(R.id.btnInterests)
 
         btnInterests.setOnClickListener {
@@ -97,7 +100,7 @@ class HomeActivity : AppCompatActivity() {
         val quizzesLayout = findViewById<LinearLayout>(R.id.quizzes)
 
         // Step 1: Clear existing views
-        quizzesLayout.removeAllViews()
+         quizzesLayout.removeAllViews()
 
         for (interest in interests) {
             quizzesLayout.addView(createQuestionDiv(interest))

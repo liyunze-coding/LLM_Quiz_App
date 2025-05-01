@@ -95,6 +95,59 @@ class DatabaseHelper(
         return userExists
     }
 
+    fun getUserInterests(userId: Int): MutableSet<String> {
+        val interests = mutableSetOf<String>()
+        val db = this.readableDatabase
+
+        val cursor = db.query(
+            Util.USER_INTEREST_TABLE_NAME,
+            arrayOf(Util.INTEREST),
+            "${Util.USER_ID} = ?",
+            arrayOf(userId.toString()),
+            null, null, null
+        )
+
+        if (cursor.moveToFirst()) {
+            do {
+                val interest = cursor.getString(cursor.getColumnIndexOrThrow(Util.INTEREST))
+                interests.add(interest)
+            } while (cursor.moveToNext())
+        }
+
+        cursor.close()
+        db.close()
+        return interests
+    }
+
+    fun getUsername(userId: Int): String {
+        val db = this.readableDatabase
+        var cursor: Cursor? = null
+        var username = "Guest"
+
+        try {
+            cursor = db.query(
+                Util.USER_TABLE_NAME,
+                arrayOf(Util.USERNAME),
+                "${Util.USER_ID} = ?",
+                arrayOf(userId.toString()),
+                null,
+                null,
+                null
+            )
+
+            if (cursor.moveToFirst()) {
+                username = cursor.getString(cursor.getColumnIndexOrThrow(Util.USERNAME))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            cursor?.close()
+            db.close()
+        }
+
+        return username
+    }
+
     fun fetchUser(usernameOrEmail: String, password: String): Int {
         val db = this.readableDatabase
         var cursor: Cursor? = null
@@ -123,17 +176,6 @@ class DatabaseHelper(
 
         return userId
     }
-
-    fun removeUserInterests(userId: Int) {
-        val db = this.writableDatabase
-        db.delete(
-            Util.USER_INTEREST_TABLE_NAME,
-            "${Util.USER_ID} = ?",
-            arrayOf(userId.toString())
-        )
-        db.close()
-    }
-
 
     fun insertUserInterests(userId: Int, interests: Set<String>): Boolean {
         if (interests.isEmpty()) return false
@@ -171,27 +213,5 @@ class DatabaseHelper(
     }
 
 
-    fun getUserInterests(userId: Int): MutableSet<String> {
-        val interests = mutableSetOf<String>()
-        val db = this.readableDatabase
 
-        val cursor = db.query(
-            Util.USER_INTEREST_TABLE_NAME,
-            arrayOf(Util.INTEREST),
-            "${Util.USER_ID} = ?",
-            arrayOf(userId.toString()),
-            null, null, null
-        )
-
-        if (cursor.moveToFirst()) {
-            do {
-                val interest = cursor.getString(cursor.getColumnIndexOrThrow(Util.INTEREST))
-                interests.add(interest)
-            } while (cursor.moveToNext())
-        }
-
-        cursor.close()
-        db.close()
-        return interests
-    }
 }
