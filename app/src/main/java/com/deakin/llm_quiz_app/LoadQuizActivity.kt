@@ -91,7 +91,7 @@ class LoadQuizActivity : AppCompatActivity() {
         )
 
         jsonObjectRequest.retryPolicy = DefaultRetryPolicy(
-            60000, // 1 minute before timeout error
+            600000,
             3, // 3 tries
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
