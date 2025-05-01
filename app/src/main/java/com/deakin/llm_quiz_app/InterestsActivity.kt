@@ -41,12 +41,12 @@ class InterestsActivity : AppCompatActivity() {
         for (i in 0 until chipGroup.childCount) {
             val chip = chipGroup.getChildAt(i) as Chip
 
-            if (selectedTopics.contains(chip.text.toString().lowercase())) {
+            if (selectedTopics.contains(chip.text.toString())) {
                 chip.isChecked = true
             }
 
             chip.setOnCheckedChangeListener { buttonView, isChecked ->
-                val label = chip.text.toString().lowercase().trim()
+                val label = chip.text.toString().trim()
 
                 if (isChecked) {
                     if (selectedTopics.size >= maxSelection) {

@@ -17,6 +17,7 @@ import com.deakin.llm_quiz_app.data.DatabaseHelper
 
 class HomeActivity : AppCompatActivity() {
     fun String.title() = replaceFirstChar(Char::titlecase)
+    var userId: Int = -1
 
     fun createQuestionDiv(interest: String): LinearLayout {
         // Step 2: Create a new LinearLayout (the "question_div" container)
@@ -64,9 +65,10 @@ class HomeActivity : AppCompatActivity() {
         questionDiv.addView(subtitleText)
 
         questionDiv.setOnClickListener {
-            val questionIntent = Intent(this, QuestionActivity::class.java)
-            questionIntent.putExtra("topic", interest)
-            startActivity(questionIntent)
+            val loadQuizIntent = Intent(this, LoadQuizActivity::class.java)
+            loadQuizIntent.putExtra("topic", interest)
+            loadQuizIntent.putExtra("userId", userId)
+            startActivity(loadQuizIntent)
         }
 
         return questionDiv
@@ -83,12 +85,12 @@ class HomeActivity : AppCompatActivity() {
         }
 
         val db = DatabaseHelper(this, null)
-        val userId = intent.getIntExtra("userId", -1)
+        userId = intent.getIntExtra("userId", -1)
         val interests = db.getUserInterests(userId)
 
         if (userId == -1) {
             val homeIntent = Intent(this, HomeActivity::class.java)
-            Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Invalid user ID", Toast.LENGTH_LONG).show()
             startActivity(homeIntent)
         }
 

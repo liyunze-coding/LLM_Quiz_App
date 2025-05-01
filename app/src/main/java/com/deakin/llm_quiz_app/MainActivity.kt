@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         val signupButton = findViewById<Button>(R.id.signupButton)
 
         loginButton.setOnClickListener {
-            val userId = db.fetchUser(usernameEditText.text.toString().lowercase().trim(), passwordEditText.text.toString())
+            val userId = db.fetchUser(usernameEditText.text.toString().trim(), passwordEditText.text.toString())
 
             if (userId > -1) {
                 Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()

@@ -1,7 +1,7 @@
 package com.deakin.llm_quiz_app.util
 
 object Util {
-    const val DATABASE_VERSION = 8
+    const val DATABASE_VERSION = 9
     const val DATABASE_NAME = "user_db"
 
     const val USER_TABLE_NAME = "user"

@@ -33,13 +33,18 @@ class SignupActivity : AppCompatActivity() {
             val editTextPassword = findViewById<EditText>(R.id.editTextPassword)
             val editTextPasswordConfirm = findViewById<EditText>(R.id.editTextPasswordConfirm)
 
-            val username = editTextUsername.text.toString().lowercase().trim()
+            val username = editTextUsername.text.toString().trim()
             val email = editTextEmail.text.toString().trim()
             val password = editTextPassword.text.toString()
             val passwordConfirm = editTextPasswordConfirm.text.toString()
 
             if (username.isEmpty() || email.isEmpty() || password.isEmpty() || passwordConfirm.isEmpty()) {
                 Toast.makeText(this, "Please fill in all required fields.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (!email.contains("@")) {
+                Toast.makeText(this, "Invalid Email", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
