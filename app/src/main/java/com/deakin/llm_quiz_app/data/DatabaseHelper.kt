@@ -6,9 +6,11 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import androidx.core.database.getIntOrNull
 import com.deakin.llm_quiz_app.model.User
 import com.deakin.llm_quiz_app.util.Util
 import androidx.core.database.sqlite.transaction
+import com.deakin.llm_quiz_app.model.Question
 
 class DatabaseHelper(
     context: Context?,
@@ -33,8 +35,23 @@ class DatabaseHelper(
             )
         """.trimIndent()
 
+        val createQuestionsTable = """
+            CREATE TABLE ${Util.QUESTION_TABLE_NAME} (
+                ${Util.QUESTION_ID} INTEGER PRIMARY KEY AUTOINCREMENT,
+                ${Util.USER_ID} INTEGER,
+                ${Util.QUESTION} TEXT,
+                ${Util.OPTION_A} TEXT,
+                ${Util.OPTION_B} TEXT,
+                ${Util.OPTION_C} TEXT,
+                ${Util.OPTION_D} TEXT,
+                ${Util.SELECTED_OPTION} INTEGER,
+                ${Util.CORRECT_ANSWER} INTEGER
+            )
+        """.trimIndent()
+
         sqLiteDatabase.execSQL(createUserTable)
         sqLiteDatabase.execSQL(createInterestsTable)
+        sqLiteDatabase.execSQL(createQuestionsTable)
     }
 
     override fun onUpgrade(sqLiteDatabase: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -119,15 +136,15 @@ class DatabaseHelper(
         return interests
     }
 
-    fun getUsername(userId: Int): String {
+    fun getUser(userId: Int) : User {
         val db = this.readableDatabase
         var cursor: Cursor? = null
-        var username = "Guest"
+        var user = User(username="Guest", email="", password="")
 
         try {
             cursor = db.query(
                 Util.USER_TABLE_NAME,
-                arrayOf(Util.USERNAME),
+                arrayOf(Util.USERNAME, Util.EMAIL),
                 "${Util.USER_ID} = ?",
                 arrayOf(userId.toString()),
                 null,
@@ -136,7 +153,8 @@ class DatabaseHelper(
             )
 
             if (cursor.moveToFirst()) {
-                username = cursor.getString(cursor.getColumnIndexOrThrow(Util.USERNAME))
+                user.username = cursor.getString(cursor.getColumnIndexOrThrow(Util.USERNAME))
+                user.email = cursor.getString(cursor.getColumnIndexOrThrow(Util.EMAIL))
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -145,7 +163,7 @@ class DatabaseHelper(
             db.close()
         }
 
-        return username
+        return user
     }
 
     fun fetchUser(usernameOrEmail: String, password: String): Int {
@@ -212,6 +230,71 @@ class DatabaseHelper(
         return result
     }
 
+    fun insertQuestion(question: Question) {
+        val db: SQLiteDatabase = this.writableDatabase
+        val contentValues: ContentValues = ContentValues().apply {
+            put(Util.USER_ID, question.userId)
+            put(Util.QUESTION, question.question)
+            put(Util.OPTION_A, question.optionA)
+            put(Util.OPTION_B, question.optionB)
+            put(Util.OPTION_C, question.optionC)
+            put(Util.OPTION_D, question.optionD)
+            put(Util.SELECTED_OPTION, question.selected)
+            put(Util.CORRECT_ANSWER, question.correctAnswer)
+        }
 
+        db.insert(
+            /* table = */ Util.QUESTION_TABLE_NAME,
+            /* nullColumnHack = */ null,
+            /* values = */ contentValues)
+        db.close()
+    }
 
+    fun getUserQuestionsHistory(userId: Int): List<Question> {
+        val db = this.readableDatabase
+        val questions = mutableListOf<Question>()
+        var cursor: Cursor? = null
+
+        try {
+            cursor = db.query(
+                Util.QUESTION_TABLE_NAME,
+                arrayOf(
+                    Util.USER_ID,
+                    Util.QUESTION,
+                    Util.OPTION_A,
+                    Util.OPTION_B,
+                    Util.OPTION_C,
+                    Util.OPTION_D,
+                    Util.SELECTED_OPTION,
+                    Util.CORRECT_ANSWER
+                ),
+                "${Util.USER_ID} = ?",
+                arrayOf(userId.toString()),
+                null,
+                null,
+                null
+            )
+
+            while (cursor.moveToNext()) {
+                val question = Question(
+                    userId = cursor.getInt(cursor.getColumnIndexOrThrow(Util.USER_ID)),
+                    question = cursor.getString(cursor.getColumnIndexOrThrow(Util.QUESTION)),
+                    optionA = cursor.getString(cursor.getColumnIndexOrThrow(Util.OPTION_A)),
+                    optionB = cursor.getString(cursor.getColumnIndexOrThrow(Util.OPTION_B)),
+                    optionC = cursor.getString(cursor.getColumnIndexOrThrow(Util.OPTION_C)),
+                    optionD = cursor.getString(cursor.getColumnIndexOrThrow(Util.OPTION_D)),
+                    selected = cursor.getInt(cursor.getColumnIndexOrThrow(Util.SELECTED_OPTION)),
+                    correctAnswer = cursor.getInt(cursor.getColumnIndexOrThrow(Util.CORRECT_ANSWER))
+                )
+                questions.add(question)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            cursor?.close()
+            db.close()
+        }
+
+        return questions
+    }
 }

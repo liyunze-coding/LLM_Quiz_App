@@ -81,21 +81,28 @@ class HomeActivity : AppCompatActivity() {
         }
 
         val usernameText = findViewById<TextView>(R.id.usernameText)
-        usernameText.text = db.getUsername(userId).title()
+        usernameText.text = db.getUser(userId).username.title()
 
         val btnInterests = findViewById<Button>(R.id.btnInterests)
-
         btnInterests.setOnClickListener {
             val interestsIntent = Intent(this, InterestsActivity::class.java)
             interestsIntent.putExtra("userId", userId)
             startActivity(interestsIntent)
         }
 
-        val quizzesLayout = findViewById<LinearLayout>(R.id.quizzes)
+        // Profile
+        val profileButton = findViewById<Button>(R.id.ProfileButton)
+        profileButton.setOnClickListener {
+            val profileIntent = Intent(this, ProfileActivity::class.java)
+            profileIntent.putExtra("userId", userId)
+            startActivity(profileIntent)
+        }
 
-        // Step 1: Clear existing views
+        // Clear existing views
+        val quizzesLayout = findViewById<LinearLayout>(R.id.quizzes)
          quizzesLayout.removeAllViews()
 
+        // add interests
         for (interest in interests) {
             quizzesLayout.addView(createQuestionDiv(interest))
         }

@@ -25,7 +25,7 @@ class ScoreActivity : AppCompatActivity() {
 
         val db = DatabaseHelper(this, null)
 
-        val username = db.getUsername(userId)
+        val username = db.getUser(userId).username
 
         findViewById<TextView>(R.id.score).text = scoreDisplay
         findViewById<TextView>(R.id.congratsText).text = "Congratulations ${username}!"
@@ -33,7 +33,9 @@ class ScoreActivity : AppCompatActivity() {
         // buttons
         findViewById<Button>(R.id.takeNewQuizButton).setOnClickListener { restartQuiz() }
         findViewById<Button>(R.id.finishButton).setOnClickListener {
-            finishAffinity()
+            val homeIntent = Intent(this, HomeActivity::class.java)
+            homeIntent.putExtra("userId", userId)
+            startActivity(homeIntent)
         }
     }
 }

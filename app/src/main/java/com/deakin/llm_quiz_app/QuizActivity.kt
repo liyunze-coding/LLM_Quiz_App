@@ -11,7 +11,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.deakin.llm_quiz_app.data.DatabaseHelper
 import com.deakin.llm_quiz_app.data.QuizQuestion
+import com.deakin.llm_quiz_app.model.Question
 import org.json.JSONObject
 
 class QuizActivity : AppCompatActivity() {
@@ -21,6 +23,7 @@ class QuizActivity : AppCompatActivity() {
     var questionList = mutableListOf<QuizQuestion>()
     var buttons: List<Button> = listOf()
     var userId: Int = -1
+    val db = DatabaseHelper(this, null)
 
     private fun selectChoice(selectedIndex: Int) {
         choice = selectedIndex
@@ -55,7 +58,8 @@ class QuizActivity : AppCompatActivity() {
     }
 
     private fun checkAnswer(selectedIndex: Int) {
-        val correctIndex = questionList[currentQuestionIndex].correctAnswerIndex
+        val currentQuestion = questionList[currentQuestionIndex]
+        val correctIndex = currentQuestion.correctAnswerIndex
 
         // Turn correct answer green
         buttons[correctIndex].setBackgroundColor(getColor(R.color.correctGreen))
@@ -71,6 +75,18 @@ class QuizActivity : AppCompatActivity() {
             buttons[choice].setBackgroundColor(getColor(R.color.wrongRed))
             buttons[choice].setTextColor(getColor(R.color.white))
         }
+
+        val question = Question(
+            userId = userId,
+            question = currentQuestion.question,
+            optionA = currentQuestion.options[0],
+            optionB = currentQuestion.options[1],
+            optionC = currentQuestion.options[2],
+            optionD = currentQuestion.options[3],
+            selected = selectedIndex,
+            correctAnswer = correctIndex
+        )
+        db.insertQuestion(question)
 
         // hide welcome text
         findViewById<TextView>(R.id.tvGreeting).visibility = View.INVISIBLE
