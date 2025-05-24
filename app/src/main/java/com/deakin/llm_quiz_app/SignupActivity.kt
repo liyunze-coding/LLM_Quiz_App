@@ -61,7 +61,8 @@ class SignupActivity : AppCompatActivity() {
             val userObj = User(
                 username,
                 email,
-                password
+                password,
+                0
             )
 
             val userId: Long = db.insertUser(userObj)

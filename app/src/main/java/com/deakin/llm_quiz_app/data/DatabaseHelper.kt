@@ -23,7 +23,8 @@ class DatabaseHelper(
                 ${Util.USER_ID} INTEGER PRIMARY KEY AUTOINCREMENT,
                 ${Util.USERNAME} TEXT,
                 ${Util.EMAIL} TEXT,
-                ${Util.PASSWORD} TEXT
+                ${Util.PASSWORD} TEXT,
+                ${Util.TIER} INTEGER
             )
         """.trimIndent()
 
@@ -57,9 +58,11 @@ class DatabaseHelper(
     override fun onUpgrade(sqLiteDatabase: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         val dropUserTable = "DROP TABLE IF EXISTS ${Util.USER_TABLE_NAME}"
         val dropInterestsTable = "DROP TABLE IF EXISTS ${Util.USER_INTEREST_TABLE_NAME}"
+        val dropQuestionsTable = "DROP TABLE IF EXISTS ${Util.QUESTION_TABLE_NAME}"
 
         sqLiteDatabase.execSQL(dropUserTable)
         sqLiteDatabase.execSQL(dropInterestsTable)
+        sqLiteDatabase.execSQL(dropQuestionsTable)
 
         onCreate(sqLiteDatabase)
     }
@@ -139,7 +142,7 @@ class DatabaseHelper(
     fun getUser(userId: Int) : User {
         val db = this.readableDatabase
         var cursor: Cursor? = null
-        var user = User(username="Guest", email="", password="")
+        var user = User(username="Guest", email="", password="", tier=0)
 
         try {
             cursor = db.query(
@@ -155,6 +158,7 @@ class DatabaseHelper(
             if (cursor.moveToFirst()) {
                 user.username = cursor.getString(cursor.getColumnIndexOrThrow(Util.USERNAME))
                 user.email = cursor.getString(cursor.getColumnIndexOrThrow(Util.EMAIL))
+                user.tier = cursor.getInt(cursor.getColumnIndexOrThrow(Util.TIER))
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -164,6 +168,28 @@ class DatabaseHelper(
         }
 
         return user
+    }
+
+    fun setTier(userId: Int, tier: Int) {
+        val db = this.writableDatabase
+        val contentValues = ContentValues().apply {
+            put(Util.TIER, tier)
+        }
+
+        try {
+            val rowsAffected = db.update(
+                Util.USER_TABLE_NAME,
+                contentValues,
+                "${Util.USER_ID} = ?",
+                arrayOf(userId.toString())
+            )
+
+            Log.d("DatabaseHelper", "Rows affected by tier update: $rowsAffected")
+        } catch (e: Exception) {
+            Log.e("DatabaseHelper", "Error updating tier for user ID: $userId", e)
+        } finally {
+            db.close()
+        }
     }
 
     fun fetchUser(usernameOrEmail: String, password: String): Int {

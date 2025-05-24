@@ -6,5 +6,86 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".HistoryActivity">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingVertical="30dp"
+            android:paddingHorizontal="30dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="History"
+                android:textStyle="bold"
+                android:textSize="40sp"
+                android:textAlignment="center"
+                />
+            <LinearLayout
+                android:id="@+id/history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="10dp"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="10dp"
+                    android:background="#0000ff"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="1. Question 1"
+                        android:textStyle="bold"
+                        android:textSize="20sp"
+                        android:textColor="#fff"
+                        />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="You can use any question here and setup a couple of answers"
+                        android:textColor="#fff"
+                        />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="⬤ Option 1"
+                        android:textColor="#ff0000"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10dp"
+                        />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="⬤ Option 2"
+                        android:textColor="#00ff00"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10dp"
+                        />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="⬤ Option 3"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10dp"
+                        />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="⬤ Option 4"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10dp"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -49,5 +49,13 @@ class ProfileActivity : AppCompatActivity() {
             viewHistoryIntent.putExtra("userId", userId)
             startActivity(viewHistoryIntent)
         }
+
+        // UPGRADE
+        val upgradeButton = findViewById<Button>(R.id.upgradeButton)
+        upgradeButton.setOnClickListener {
+            val upgradeIntent = Intent(this, UpgradeActivity::class.java)
+            upgradeIntent.putExtra("userId", userId)
+            startActivity(upgradeIntent)
+        }
     }
 }
