@@ -36,10 +36,15 @@ android {
 }
 
 dependencies {
-    implementation("com.google.code.gson:gson:2.13.1")
-    implementation("com.android.volley:volley:1.2.1")
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    implementation("com.google.android.gms:play-services-wallet:19.4.0")
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.fragment.ktx) 
+    implementation(libs.kotlinx.coroutines.play.services)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.gson)
+    implementation(libs.volley)
+    implementation(libs.glide)
+    implementation(libs.play.services.wallet)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
