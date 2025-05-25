@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -70,7 +71,14 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         // SHARE
+        val shareButton = findViewById<Button>(R.id.shareButton)
+        shareButton.setOnClickListener {
+            val information = "${username}'s Quiz App Statistics\n" +
+                    "Score: ${incorrectAnswers}/${totalQuestions}\n\n" +
+                    "What score can you get?"
+            shareText(information)
 
+        }
 
         // BACK
         val backButton = findViewById<Button>(R.id.backButton)
@@ -78,6 +86,24 @@ class ProfileActivity : AppCompatActivity() {
             val homeIntent = Intent(this, HomeActivity::class.java)
             homeIntent.putExtra("userId", userId)
             startActivity(homeIntent)
+        }
+    }
+
+    private fun shareText(text: String) {
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND // Sets the action to send data
+            putExtra(Intent.EXTRA_TEXT, text) // Adds the text to share
+            type = "text/plain" // Sets the MIME type of the data
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, "Share via") // "Share via" is the title of the chooser dialog
+
+        // Verify that an app exists to receive the intent
+        if (sendIntent.resolveActivity(packageManager) != null) {
+            startActivity(shareIntent)
+        } else {
+            // Handle the case where no app can handle the share intent
+            Toast.makeText(this, "No app found to handle sharing", Toast.LENGTH_SHORT).show()
         }
     }
 }

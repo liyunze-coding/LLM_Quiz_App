@@ -136,7 +136,7 @@
             android:text="Upgrade" />
 
         <Button
-            android:id="@+id/ShareButton"
+            android:id="@+id/shareButton"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="Share" />
