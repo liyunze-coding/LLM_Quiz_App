@@ -39,6 +39,13 @@
                 android:text="email@example.com"
                 android:textSize="20sp"
                 android:textAlignment="center"/>
+            <TextView
+                android:id="@+id/profileTier"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Beginner"
+                android:textSize="20sp"
+                android:textAlignment="center"/>
 
         </LinearLayout>
 
@@ -127,6 +134,19 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="Upgrade" />
+
+        <Button
+            android:id="@+id/ShareButton"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Share" />
+
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:layout_marginTop="50dp"/>
 
 
     </LinearLayout>

@@ -13,7 +13,9 @@
         android:orientation="vertical"
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="1dp"
-        android:paddingHorizontal="20dp">
+        android:paddingHorizontal="20dp"
+        android:gravity="center"
+        >
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,13 +33,15 @@
             android:background="#0000ff"
             android:paddingHorizontal="20dp"
             android:paddingVertical="10dp"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Starter"
+                android:text="Beginner"
                 android:textSize="30sp"
                 android:textColor="#ffffff"
+                android:textAlignment="center"
                 />
             <TextView
                 android:layout_width="match_parent"
@@ -45,14 +49,101 @@
                 android:text="Free tier"
                 android:textSize="20sp"
                 android:textColor="#ffffff"
+                android:textAlignment="center"
                 />
-            <com.google.android.gms.wallet.button.PayButton
-                android:id="@+id/googlePayButton"
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteX="1dp"
+            tools:layout_editor_absoluteY="1dp"
+            android:background="#0000ff"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:gravity="center">
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"/>
+                android:text="Intermediate"
+                android:textSize="30sp"
+                android:textColor="#ffffff"
+                android:textAlignment="center"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="$5"
+                android:textSize="20sp"
+                android:textColor="#ffffff"
+                android:textAlignment="center"
+                />
+            <include
+                android:id="@+id/googlePayButton"
+                layout="@layout/buy_with_googlepay_button"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="20dp"
+                android:visibility="gone" />
 
+            <Button
+                android:id="@+id/cancelIntermediateButton"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:visibility="gone"/>
 
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteX="1dp"
+            tools:layout_editor_absoluteY="1dp"
+            android:background="#0000ff"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:gravity="center">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Advanced"
+                android:textSize="30sp"
+                android:textColor="#ffffff"
+                android:textAlignment="center"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="$10"
+                android:textSize="20sp"
+                android:textColor="#ffffff"
+                android:textAlignment="center"
+                />
+            <include
+                android:id="@+id/googlePayButton2"
+                layout="@layout/buy_with_googlepay_button"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="20dp"
+                android:visibility="gone" />
+            <Button
+                android:id="@+id/cancelAdvancedButton"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:layout_marginTop="50dp"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

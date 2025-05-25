@@ -29,9 +29,20 @@ class ProfileActivity : AppCompatActivity() {
         val user = db.getUser(userId)
         val username = user.username
         val email = user.email
+        val tier = user.tier
+        var tierTitle = ""
+
+        if (tier == 0) {
+            tierTitle = "Beginner"
+        } else if (tier == 1) {
+            tierTitle = "Intermediate"
+        } else if (tier == 2) {
+            tierTitle = "Advanced"
+        }
 
         findViewById<TextView>(R.id.profileUsername).text = username
         findViewById<TextView>(R.id.profileEmail).text = email
+        findViewById<TextView>(R.id.profileTier).text = tierTitle
 
         val questionHistory = db.getUserQuestionsHistory(userId)
         val totalQuestions = questionHistory.size
@@ -56,6 +67,17 @@ class ProfileActivity : AppCompatActivity() {
             val upgradeIntent = Intent(this, UpgradeActivity::class.java)
             upgradeIntent.putExtra("userId", userId)
             startActivity(upgradeIntent)
+        }
+
+        // SHARE
+
+
+        // BACK
+        val backButton = findViewById<Button>(R.id.backButton)
+        backButton.setOnClickListener {
+            val homeIntent = Intent(this, HomeActivity::class.java)
+            homeIntent.putExtra("userId", userId)
+            startActivity(homeIntent)
         }
     }
 }

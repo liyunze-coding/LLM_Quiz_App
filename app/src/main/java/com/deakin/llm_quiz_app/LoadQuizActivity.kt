@@ -13,6 +13,7 @@ import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.deakin.llm_quiz_app.data.DatabaseHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -30,6 +31,7 @@ class LoadQuizActivity : AppCompatActivity() {
         "Almost there..."
     )
     var userId = -1
+    val db = DatabaseHelper(this, null)
 
     private var loadingJob: Job? = null
 
@@ -72,7 +74,8 @@ class LoadQuizActivity : AppCompatActivity() {
 
     private fun fetchQuizFromFlask(topic: String) {
         val topicUrl = topic.replace(" ", "+")
-        val url = "http://10.0.2.2:6980/getQuiz?topic=$topicUrl" // Localhost for Android emulator
+        val userTier = db.getUser(userId).tier
+        val url = "http://10.0.2.2:6980/getQuiz?topic=${topicUrl}&tier=${userTier}" // Localhost for Android emulator
 
         val queue = Volley.newRequestQueue(this)
 

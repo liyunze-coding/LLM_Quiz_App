@@ -147,7 +147,7 @@ class DatabaseHelper(
         try {
             cursor = db.query(
                 Util.USER_TABLE_NAME,
-                arrayOf(Util.USERNAME, Util.EMAIL),
+                arrayOf(Util.USERNAME, Util.EMAIL, Util.TIER),
                 "${Util.USER_ID} = ?",
                 arrayOf(userId.toString()),
                 null,
@@ -170,11 +170,12 @@ class DatabaseHelper(
         return user
     }
 
-    fun setTier(userId: Int, tier: Int) {
+    fun setTier(userId: Int, tier: Int): Boolean {
         val db = this.writableDatabase
         val contentValues = ContentValues().apply {
             put(Util.TIER, tier)
         }
+        var result = false
 
         try {
             val rowsAffected = db.update(
@@ -184,12 +185,16 @@ class DatabaseHelper(
                 arrayOf(userId.toString())
             )
 
+            result = rowsAffected > 0
+
             Log.d("DatabaseHelper", "Rows affected by tier update: $rowsAffected")
         } catch (e: Exception) {
             Log.e("DatabaseHelper", "Error updating tier for user ID: $userId", e)
         } finally {
             db.close()
         }
+
+        return result
     }
 
     fun fetchUser(usernameOrEmail: String, password: String): Int {
