@@ -6,24 +6,29 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import android.widget.Toast
 import androidx.core.database.getIntOrNull
 import com.deakin.llm_quiz_app.model.User
 import com.deakin.llm_quiz_app.util.Util
 import androidx.core.database.sqlite.transaction
+import com.android.volley.DefaultRetryPolicy
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.deakin.llm_quiz_app.model.Question
+import com.deakin.llm_quiz_app.model.RegistrationResponse
 
 class DatabaseHelper(
     context: Context?,
     factory: SQLiteDatabase.CursorFactory?
 ) : SQLiteOpenHelper(context, Util.DATABASE_NAME, factory, Util.DATABASE_VERSION) {
-
     override fun onCreate(sqLiteDatabase: SQLiteDatabase) {
         val createUserTable = """
             CREATE TABLE ${Util.USER_TABLE_NAME} (
                 ${Util.USER_ID} INTEGER PRIMARY KEY AUTOINCREMENT,
+                ${Util.ACCOUNT_ID} INTEGER,
                 ${Util.USERNAME} TEXT,
                 ${Util.EMAIL} TEXT,
-                ${Util.PASSWORD} TEXT,
                 ${Util.TIER} INTEGER
             )
         """.trimIndent()
@@ -76,7 +81,7 @@ class DatabaseHelper(
         val contentValues: ContentValues = ContentValues().apply {
             put(Util.USERNAME, user.username)
             put(Util.EMAIL, user.email)
-            put(Util.PASSWORD, user.password)
+            put(Util.ACCOUNT_ID, user.accountID)
         }
 
         val newRowId: Long = db.insert(
@@ -142,12 +147,12 @@ class DatabaseHelper(
     fun getUser(userId: Int) : User {
         val db = this.readableDatabase
         var cursor: Cursor? = null
-        var user = User(username="Guest", email="", password="", tier=0)
+        var user = User(accountID="",username="Guest", email="", tier=0)
 
         try {
             cursor = db.query(
                 Util.USER_TABLE_NAME,
-                arrayOf(Util.USERNAME, Util.EMAIL, Util.TIER),
+                arrayOf(Util.USERNAME, Util.EMAIL, Util.TIER, Util.ACCOUNT_ID),
                 "${Util.USER_ID} = ?",
                 arrayOf(userId.toString()),
                 null,
@@ -159,6 +164,7 @@ class DatabaseHelper(
                 user.username = cursor.getString(cursor.getColumnIndexOrThrow(Util.USERNAME))
                 user.email = cursor.getString(cursor.getColumnIndexOrThrow(Util.EMAIL))
                 user.tier = cursor.getInt(cursor.getColumnIndexOrThrow(Util.TIER))
+                user.accountID = cursor.getString(cursor.getColumnIndexOrThrow(Util.ACCOUNT_ID))
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -197,20 +203,20 @@ class DatabaseHelper(
         return result
     }
 
-    fun fetchUser(usernameOrEmail: String, password: String): Int {
+    fun fetchUser(accountID: String): Int {
         val db = this.readableDatabase
         var cursor: Cursor? = null
         var userId = -1
 
         try {
             cursor = db.query(
-                Util.USER_TABLE_NAME,
-                arrayOf(Util.USER_ID),
-                "(${Util.USERNAME} = ? OR ${Util.EMAIL} = ?) AND ${Util.PASSWORD} = ?",
-                arrayOf(usernameOrEmail, usernameOrEmail, password),
-                null,
-                null,
-                null
+                /* table = */ Util.USER_TABLE_NAME,
+                /* columns = */ arrayOf(Util.USER_ID),
+                /* selection = */ "${Util.ACCOUNT_ID} = ?",
+                /* selectionArgs = */ arrayOf(accountID),
+                /* groupBy = */ null,
+                /* having = */ null,
+                /* orderBy = */ null
             )
 
             if (cursor.moveToFirst()) {

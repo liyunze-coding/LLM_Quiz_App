@@ -1,4 +1,4 @@
-package com.deakin.llm_quiz_app.data
+package com.deakin.llm_quiz_app.model
 
 data class QuizQuestion(
     val question: String,

@@ -98,6 +98,13 @@ class HomeActivity : AppCompatActivity() {
             startActivity(profileIntent)
         }
 
+        // Logout
+        val logoutButton = findViewById<Button>(R.id.LogoutButton)
+        logoutButton.setOnClickListener {
+            val mainIntent = Intent(this, MainActivity::class.java)
+            startActivity(mainIntent)
+        }
+
         // Clear existing views
         val quizzesLayout = findViewById<LinearLayout>(R.id.quizzes)
          quizzesLayout.removeAllViews()

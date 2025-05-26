@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.deakin.llm_quiz_app.data.DatabaseHelper
-import com.deakin.llm_quiz_app.data.QuizQuestion
+import com.deakin.llm_quiz_app.model.QuizQuestion
 import com.deakin.llm_quiz_app.model.Question
 import org.json.JSONObject
 

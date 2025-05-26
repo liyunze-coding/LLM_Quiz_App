@@ -1,7 +1,9 @@
 package com.deakin.llm_quiz_app
 
 import android.content.Intent
+import android.nfc.Tag
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -9,10 +11,83 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.android.volley.DefaultRetryPolicy
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.deakin.llm_quiz_app.data.DatabaseHelper
 import com.deakin.llm_quiz_app.model.User
+import com.deakin.llm_quiz_app.model.UserRegistrationRequest
+import org.json.JSONException
+import org.json.JSONObject
 
 class SignupActivity : AppCompatActivity() {
+    private val TAG = "SignUpActivity"
+    private val REGISTER_URL = "http://10.0.2.2:5000/api/auth/register"
+
+
+    private fun insertUser(user: UserRegistrationRequest) {
+        val requestBodyJson = JSONObject().apply {
+            put("username", user.username)
+            put("email", user.email)
+            put("password", user.password)
+        }
+
+        val url = REGISTER_URL
+
+        val queue = Volley.newRequestQueue(this)
+
+        val jsonObjectRequest = JsonObjectRequest(
+            Request.Method.POST, url, requestBodyJson,
+            { response ->
+                handleInsertUserResponse(response)
+            },
+            { error ->
+                val errorMsg = error.networkResponse?.let {
+                    "HTTP ${it.statusCode}: ${String(it.data)}"
+                } ?: error.message ?: "Unknown error"
+                Log.e("Error", "Error fetching quiz: $errorMsg", error)
+                Toast.makeText(this, "Error: $errorMsg", Toast.LENGTH_LONG).show()
+            }
+        )
+
+        jsonObjectRequest.retryPolicy = DefaultRetryPolicy(
+            600000,
+            3, // 3 tries
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
+
+        queue.add(jsonObjectRequest)
+    }
+
+    private fun handleInsertUserResponse(response: JSONObject) {
+        Toast.makeText(this, "Registered successfully!", Toast.LENGTH_SHORT).show()
+
+        Log.d(TAG, "Quiz JSON: $response")
+
+        val db = DatabaseHelper(this, null)
+
+        val accountDetails = response.getJSONObject("account")
+        val mongoID = accountDetails.getString("_id")
+        val email = accountDetails.getString("email")
+        val username = accountDetails.getString("username")
+
+        val newUser = User(
+            accountID = mongoID,
+            username = username,
+            email = email,
+            tier = 0
+        )
+
+        Log.e(TAG, "${newUser}")
+
+        val insertUserResult = db.insertUser(newUser)
+
+        Log.d(TAG, "$insertUserResult")
+
+        finish()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -23,7 +98,7 @@ class SignupActivity : AppCompatActivity() {
             insets
         }
 
-        val db = DatabaseHelper(this, null)
+
 
         val createAccountButton = findViewById<Button>(R.id.CreateAccountButton)
 
@@ -58,19 +133,13 @@ class SignupActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val userObj = User(
+            val userObj = UserRegistrationRequest(
                 username,
                 email,
-                password,
-                0
+                password
             )
 
-            val userId: Long = db.insertUser(userObj)
-            if (userId > -1) {
-                Toast.makeText(this, "Registered successfully!", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Registration error.", Toast.LENGTH_SHORT).show()
-            }
+            insertUser(userObj)
         }
     }
 }

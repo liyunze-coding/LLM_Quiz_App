@@ -75,7 +75,7 @@ class LoadQuizActivity : AppCompatActivity() {
     private fun fetchQuizFromFlask(topic: String) {
         val topicUrl = topic.replace(" ", "+")
         val userTier = db.getUser(userId).tier
-        val url = "http://10.0.2.2:6980/getQuiz?topic=${topicUrl}&tier=${userTier}" // Localhost for Android emulator
+        val url = "http://10.0.2.2:5000/getQuiz?topic=${topicUrl}&tier=${userTier}" // Localhost for Android emulator
 
         val queue = Volley.newRequestQueue(this)
 
